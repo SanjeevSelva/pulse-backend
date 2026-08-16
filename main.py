@@ -1,7 +1,18 @@
-from fastapi import FastAPI
+import os
+import requests
+from dotenv import load_dotenv
 
-app = FastAPI()
+load_dotenv()
+API_KEY = os.getenv("API_FOOTBALL_KEY")
 
-@app.get("/")
-def read_root():
-    return {"status": "pulse backend is alive"}
+def get_live_fixtures():
+    headers = {"x-apisports-key": API_KEY}
+    response = requests.get(
+        "https://v3.football.api-sports.io/fixtures?live=all",
+        headers=headers
+    )
+    data = response.json()
+    return data["response"]
+
+if __name__ == "__main__":
+    print(get_live_fixtures())
